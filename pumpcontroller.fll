@@ -1,0 +1,46 @@
+Engine: PumpController
+InputVariable: level
+  enabled: true
+  range: 0.000 100.000
+  term: empty Trapezoid 0.000 0.000 35.000 40.000
+  term: emptying Triangle 35.000 45.000 55.000
+  term: good Triangle 45.000 55.000 65.000
+  term: filling Triangle 55.000 65.000 75.000
+  term: full Trapezoid 65.000 75.000 100.000 100.000
+InputVariable: demand
+  enabled: true
+  range: -1.000 1.500
+  term: emptying Trapezoid -1.000 -1.000 -0.375 0.250
+  term: ok Triangle -0.375 0.250 0.875
+  term: filling Trapezoid 0.250 0.875 1.500 1.500
+OutputVariable: command
+  enabled: true
+  range: -1.000 1.000
+  accumulation: Maximum
+  defuzzifier: Centroid 200
+  default: nan
+  lock-valid: false
+  lock-range: false
+  term: emptying Triangle -1.000 -0.500 0.000
+  term: good Triangle -0.500 0.000 0.500
+  term: filling Triangle 0.000 0.500 1.000
+RuleBlock: 
+  enabled: true
+  conjunction: Minimum
+  disjunction: Maximum
+  activation: Minimum
+  rule: if level is empty and demand is emptying then command is filling
+  rule: if level is empty and demand is ok then command is filling
+  rule: if level is empty and demand is filling then command is filling
+  rule: if level is emptying and demand is emptying then command is filling
+  rule: if level is emptying and demand is ok then command is filling
+  rule: if level is emptying and demand is filling then command is good
+  rule: if level is good and demand is emptying then command is filling
+  rule: if level is good and demand is ok then command is good
+  rule: if level is good and demand is filling then command is emptying
+  rule: if level is filling and demand is emptying then command is good
+  rule: if level is filling and demand is ok then command is emptying
+  rule: if level is filling and demand is filling then command is emptying
+  rule: if level is full and demand is emptying then command is good
+  rule: if level is full and demand is ok then command is emptying
+  rule: if level is full and demand is filling then command is emptying
